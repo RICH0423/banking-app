@@ -8,9 +8,7 @@ A monolithic application is built as a single, unified unit. All the application
 ```mermaid
 graph TB
     %% Client Layer
-    subgraph "Client Layer"
-        Browser[Web Browser]
-    end
+    Browser[Web Browser]
     
     %% Monolithic MVC Application
     subgraph "Monolithic MVC Banking Application"

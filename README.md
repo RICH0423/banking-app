@@ -3,113 +3,78 @@
 A Monolithic Banking Application developed using Java MVC(JSP, Servlet, JDBC) and MySQL Database.
 
 ### Architecture Diagram
-A monolithic application is built as a single, unified unit. All the application's functionalities, such as user interface(View Layer), business logic(Controller/Service Layer), and data access(DAO Layer), are tightly coupled and deployed as one piece.
+The updated application splits the frontend and backend into separate components connected via a REST API.
 
 ```mermaid
 graph TB
-    %% Client Layer
+    %% Client
     Browser[Web Browser]
-    
-    %% Monolithic MVC Application
-    subgraph "Monolithic MVC Banking Application"
-        %% View Layer (JSP)
-        subgraph "View Layer - JSP"
-            INDEX[index.jsp]
-            LOGIN[login.jsp]
-            DASH[dashboard.jsp]
-            TRANS[transaction.jsp]
-            ERROR[error.jsp]
-            CSS[style.css]
+
+    %% Frontend
+    subgraph "Vue.js Frontend"
+        VueApp[Vue App]
+    end
+
+    %% Backend
+    subgraph "Spring Boot Banking API"
+        subgraph "Controllers"
+            LoginCtrl[LoginController]
+            AccountCtrl[AccountController]
+            TxnCtrl[TransactionController]
         end
-        
-        %% Controller Layer (Servlets)
-        subgraph "Controller Layer - Servlets"
-            LS[LoginServlet]
-            DS[DashboardServlet]
-            TS[TransactionServlet]
-            LOS[LogoutServlet]
-        end
-        
-        %% Model Layer
-        subgraph "Model Layer"
-            subgraph "DAOs"
-                ADAO[AccountDAO]
-                TDAO[TransactionDAO]
-            end
-            
-            subgraph "Models"
-                ACC[Account.java]
-                TRN[Transaction.java]
-            end
-            
-            subgraph "Utilities"
-                DBC[DBConnection.java]
-            end
+        subgraph "Service Layer"
+            AccountService
+            TransactionService
         end
     end
-    
-    %% Database Layer
-    subgraph "Database Layer"
-        MySQL[(MySQL Database)]
+
+    %% DAO and Model
+    subgraph "DAO Layer"
+        ADAO[AccountDAO]
+        TDAO[TransactionDAO]
+        DBC[DBConnection]
     end
-    
-    %% Request Flow
-    Browser --> INDEX
-    Browser --> LOGIN
-    Browser --> DASH
-    Browser --> TRANS
-    Browser --> ERROR
-    
-    %% Static Resources
-    LOGIN --> CSS
-    DASH --> CSS
-    TRANS --> CSS
-    
-    %% JSP to Servlets
-    LOGIN --> LS
-    DASH --> DS
-    TRANS --> TS
-    LOGIN --> LOS
-    
-    %% Servlet Response to JSP
-    LS --> DASH
-    LS --> ERROR
-    DS --> DASH
-    TS --> TRANS
-    TS --> ERROR
-    LOS --> LOGIN
-    
-    %% Servlets to DAOs
-    LS --> ADAO
-    DS --> ADAO
-    DS --> TDAO
-    TS --> ADAO
-    TS --> TDAO
-    
-    %% DAOs use Models
+
+    subgraph "Models"
+        ACC[Account]
+        TRN[Transaction]
+    end
+
+    MySQL[(MySQL Database)]
+
+    %% Flow
+    Browser --> VueApp
+    VueApp --> LoginCtrl
+    VueApp --> AccountCtrl
+    VueApp --> TxnCtrl
+    LoginCtrl --> AccountService
+    AccountCtrl --> AccountService
+    TxnCtrl --> TransactionService
+    AccountService --> ADAO
+    TransactionService --> ADAO
+    TransactionService --> TDAO
     ADAO --> ACC
     TDAO --> TRN
-    
-    %% DAOs use DB Connection
     ADAO --> DBC
     TDAO --> DBC
-    
-    %% DB Connection to MySQL
     DBC --> MySQL
-    
+
     %% Styling
     classDef client fill:#e3f2fd
     classDef view fill:#f3e5f5
     classDef controller fill:#e8f5e8
+    classDef service fill:#f1f8e9
     classDef model fill:#fff3e0
     classDef dao fill:#fce4ec
     classDef database fill:#e0f2f1
-    
+
     class Browser client
-    class INDEX,LOGIN,DASH,TRANS,ERROR,CSS view
-    class LS,DS,TS,LOS controller
-    class ACC,TRN,DBC model
+    class VueApp view
+    class LoginCtrl,AccountCtrl,TxnCtrl controller
+    class AccountService,TransactionService service
+    class ACC,TRN model
     class ADAO,TDAO dao
+    class DBC dao
     class MySQL database
 ```
 

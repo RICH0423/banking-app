@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: banking-backend
+  template:
+    metadata:
+      labels:
+        app: banking-backend
+    spec:
+      containers:
+      - name: backend
+        image: banking-app:latest
+        ports:
+        - containerPort: 8081

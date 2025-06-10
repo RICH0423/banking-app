@@ -1,107 +1,13 @@
 graph TB
-    %% Client Layer
-    subgraph "Client Layer"
-        Browser[Web Browser]
-    end
-    
-    %% Monolithic MVC Application
-    subgraph "Monolithic MVC Banking Application"
-        %% View Layer (JSP)
-        subgraph "View Layer - JSP"
-            INDEX[index.jsp]
-            LOGIN[login.jsp]
-            DASH[dashboard.jsp]
-            TRANS[transaction.jsp]
-            ERROR[error.jsp]
-            CSS[style.css]
-        end
-        
-        %% Controller Layer (Servlets)
-        subgraph "Controller Layer - Servlets"
-            LS[LoginServlet]
-            DS[DashboardServlet]
-            TS[TransactionServlet]
-            LOS[LogoutServlet]
-        end
-        
-        %% Model Layer
-        subgraph "Model Layer"
-            subgraph "DAOs"
-                ADAO[AccountDAO]
-                TDAO[TransactionDAO]
-            end
-            
-            subgraph "Models"
-                ACC[Account.java]
-                TRN[Transaction.java]
-            end
-            
-            subgraph "Utilities"
-                DBC[DBConnection.java]
-            end
-        end
-    end
-    
-    %% Database Layer
-    subgraph "Database Layer"
-        MySQL[(MySQL Database)]
-    end
-    
-    %% Request Flow
-    Browser --> INDEX
-    Browser --> LOGIN
-    Browser --> DASH
-    Browser --> TRANS
-    Browser --> ERROR
-    
-    %% Static Resources
-    LOGIN --> CSS
-    DASH --> CSS
-    TRANS --> CSS
-    
-    %% JSP to Servlets
-    LOGIN --> LS
-    DASH --> DS
-    TRANS --> TS
-    LOGIN --> LOS
-    
-    %% Servlet Response to JSP
-    LS --> DASH
-    LS --> ERROR
-    DS --> DASH
-    TS --> TRANS
-    TS --> ERROR
-    LOS --> LOGIN
-    
-    %% Servlets to DAOs
-    LS --> ADAO
-    DS --> ADAO
-    DS --> TDAO
-    TS --> ADAO
-    TS --> TDAO
-    
-    %% DAOs use Models
-    ADAO --> ACC
-    TDAO --> TRN
-    
-    %% DAOs use DB Connection
-    ADAO --> DBC
-    TDAO --> DBC
-    
-    %% DB Connection to MySQL
-    DBC --> MySQL
-    
-    %% Styling
-    classDef client fill:#e3f2fd
-    classDef view fill:#f3e5f5
-    classDef controller fill:#e8f5e8
-    classDef model fill:#fff3e0
-    classDef dao fill:#fce4ec
-    classDef database fill:#e0f2f1
-    
-    class Browser client
-    class INDEX,LOGIN,DASH,TRANS,ERROR,CSS view
-    class LS,DS,TS,LOS controller
-    class ACC,TRN,DBC model
-    class ADAO,TDAO dao
-    class MySQL database
+  subgraph Client
+    Browser[Browser]
+  end
+  subgraph Frontend
+    Vue[Vue.js SPA]
+  end
+  subgraph Backend
+    Spring[Spring Boot REST API]
+  end
+  Browser --> Vue
+  Vue -->|HTTP| Spring
+  Spring --> MySQL[(MySQL)]

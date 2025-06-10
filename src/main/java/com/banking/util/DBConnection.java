@@ -4,10 +4,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/banking_db";
-    private static final String USER = "root";
-    private static final String PASSWORD = "password";
+    @Value("${spring.datasource.url:jdbc:mysql://localhost:3306/banking_db}")
+    private String url;
+
+    @Value("${spring.datasource.username:root}")
+    private String user;
+
+    @Value("${spring.datasource.password:password}")
+    private String password;
     
     static {
         try {
@@ -17,7 +26,7 @@ public class DBConnection {
         }
     }
     
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 }

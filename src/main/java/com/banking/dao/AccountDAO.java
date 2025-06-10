@@ -7,14 +7,19 @@ import java.sql.SQLException;
 
 import com.banking.model.Account;
 import com.banking.util.DBConnection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class AccountDAO {
+    @Autowired
+    private DBConnection dbConnection;
     
     public Account login(String email, String password) {
         Account account = null;
         String sql = "SELECT * FROM accounts WHERE email = ? AND password = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = dbConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, email);
@@ -34,7 +39,7 @@ public class AccountDAO {
         Account account = null;
         String sql = "SELECT * FROM accounts WHERE account_id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = dbConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, accountId);
@@ -52,7 +57,7 @@ public class AccountDAO {
     public boolean updateBalance(int accountId, double newBalance) {
         String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = dbConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setDouble(1, newBalance);

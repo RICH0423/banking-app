@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banking App</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id="app">
+    <div v-if="!account">
+        <h2>Login</h2>
+        <input v-model="email" placeholder="Email" />
+        <input v-model="password" type="password" placeholder="Password" />
+        <button @click="login">Login</button>
+        <p style="color:red" v-if="error">{{ error }}</p>
+    </div>
+    <div v-else>
+        <h2>Welcome {{ account.customerName }}</h2>
+        <p>Balance: {{ account.balance }}</p>
+        <button @click="loadTransactions">Load Transactions</button>
+        <ul>
+            <li v-for="t in transactions" :key="t.transactionId">
+                {{ t.transactionDate }} - {{ t.transactionType }} - {{ t.amount }}
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+const { createApp } = Vue;
+createApp({
+    data() {
+        return {
+            email: '',
+            password: '',
+            account: null,
+            error: '',
+            transactions: []
+        };
+    },
+    methods: {
+        async login() {
+            const res = await fetch('api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email: this.email, password: this.password})
+            });
+            if (res.ok) {
+                this.account = await res.json();
+                this.error = '';
+            } else {
+                const text = await res.text();
+                this.error = text;
+            }
+        },
+        async loadTransactions() {
+            const res = await fetch(`api/account/${this.account.accountId}/transactions`);
+            if (res.ok) {
+                this.transactions = await res.json();
+            }
+        }
+    }
+}).mount('#app');
+</script>
+</body>
+</html>

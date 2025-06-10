@@ -1,5 +1,7 @@
 package com.banking.dao;
 
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +10,7 @@ import java.sql.SQLException;
 import com.banking.model.Account;
 import com.banking.util.DBConnection;
 
+@Repository
 public class AccountDAO {
     
     public Account login(String email, String password) {

@@ -1,155 +1,53 @@
-##  Banking Application
+## Banking Application
 
-A Monolithic Banking Application developed using Java MVC(JSP, Servlet, JDBC) and MySQL Database.
+This project modernizes the original JSP/Servlet based banking application by replacing the frontend with Vue.js and rewriting the backend using Spring Boot 3.5 (Java 21). The REST API is exposed under the `/banking-app` context path so existing endpoints remain compatible.
 
 ### Architecture Diagram
-A monolithic application is built as a single, unified unit. All the application's functionalities, such as user interface(View Layer), business logic(Controller/Service Layer), and data access(DAO Layer), are tightly coupled and deployed as one piece.
 
 ```mermaid
 graph TB
-    %% Client Layer
     Browser[Web Browser]
-    
-    %% Monolithic MVC Application
-    subgraph "Monolithic MVC Banking Application"
-        %% View Layer (JSP)
-        subgraph "View Layer - JSP"
-            INDEX[index.jsp]
-            LOGIN[login.jsp]
-            DASH[dashboard.jsp]
-            TRANS[transaction.jsp]
-            ERROR[error.jsp]
-            CSS[style.css]
-        end
-        
-        %% Controller Layer (Servlets)
-        subgraph "Controller Layer - Servlets"
-            LS[LoginServlet]
-            DS[DashboardServlet]
-            TS[TransactionServlet]
-            LOS[LogoutServlet]
-        end
-        
-        %% Model Layer
-        subgraph "Model Layer"
-            subgraph "DAOs"
-                ADAO[AccountDAO]
-                TDAO[TransactionDAO]
-            end
-            
-            subgraph "Models"
-                ACC[Account.java]
-                TRN[Transaction.java]
-            end
-            
-            subgraph "Utilities"
-                DBC[DBConnection.java]
-            end
-        end
+    subgraph "Vue.js SPA"
+        UI[index.html]
     end
-    
-    %% Database Layer
-    subgraph "Database Layer"
-        MySQL[(MySQL Database)]
+    subgraph "Spring Boot Backend"
+        LoginController
+        AccountController
+        DAO[DAO Layer]
+        Models[Models]
+        DBConnection
     end
-    
-    %% Request Flow
-    Browser --> INDEX
-    Browser --> LOGIN
-    Browser --> DASH
-    Browser --> TRANS
-    Browser --> ERROR
-    
-    %% Static Resources
-    LOGIN --> CSS
-    DASH --> CSS
-    TRANS --> CSS
-    
-    %% JSP to Servlets
-    LOGIN --> LS
-    DASH --> DS
-    TRANS --> TS
-    LOGIN --> LOS
-    
-    %% Servlet Response to JSP
-    LS --> DASH
-    LS --> ERROR
-    DS --> DASH
-    TS --> TRANS
-    TS --> ERROR
-    LOS --> LOGIN
-    
-    %% Servlets to DAOs
-    LS --> ADAO
-    DS --> ADAO
-    DS --> TDAO
-    TS --> ADAO
-    TS --> TDAO
-    
-    %% DAOs use Models
-    ADAO --> ACC
-    TDAO --> TRN
-    
-    %% DAOs use DB Connection
-    ADAO --> DBC
-    TDAO --> DBC
-    
-    %% DB Connection to MySQL
-    DBC --> MySQL
-    
-    %% Styling
-    classDef client fill:#e3f2fd
-    classDef view fill:#f3e5f5
-    classDef controller fill:#e8f5e8
-    classDef model fill:#fff3e0
-    classDef dao fill:#fce4ec
-    classDef database fill:#e0f2f1
-    
-    class Browser client
-    class INDEX,LOGIN,DASH,TRANS,ERROR,CSS view
-    class LS,DS,TS,LOS controller
-    class ACC,TRN,DBC model
-    class ADAO,TDAO dao
-    class MySQL database
+    MySQL[(MySQL Database)]
+
+    Browser --> UI
+    UI --> LoginController
+    UI --> AccountController
+    LoginController --> DAO
+    AccountController --> DAO
+    DAO --> DBConnection
+    DBConnection --> MySQL
 ```
 
 ### Project Structure
 ```
 banking-app/
 ├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── banking/
-│       │           ├── model/
-│       │           │   ├── Account.java
-│       │           │   └── Transaction.java
-│       │           ├── dao/
-│       │           │   ├── AccountDAO.java
-│       │           │   └── TransactionDAO.java
-│       │           ├── controller/
-│       │           │   ├── LoginServlet.java
-│       │           │   ├── DashboardServlet.java
-│       │           │   ├── TransactionServlet.java
-│       │           │   └── LogoutServlet.java
-│       │           └── util/
-│       │               └── DBConnection.java
-│       └── webapp/
-│           ├── WEB-INF/
-│           │   ├── web.xml
-│           │   └── lib/
-│           ├── jsp/
-│           │   ├── login.jsp
-│           │   ├── dashboard.jsp
-│           │   ├── transaction.jsp
-│           │   └── error.jsp
-│           ├── css/
-│           │   └── style.css
-│           └── index.jsp
+│   ├── main/
+│   │   ├── java/com/banking/
+│   │   │   ├── api/                # REST controllers
+│   │   │   ├── dao/                # Data access objects
+│   │   │   ├── model/              # Domain models
+│   │   │   ├── util/               # Utilities (DB connection)
+│   │   │   └── BankingAppApplication.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       └── static/index.html   # Vue.js front end
+│   └── test/java/com/banking/api/  # Spring MVC tests
 └── pom.xml
 ```
 
 ### Database Schema
+The database schema remains the same as the previous version and can be found in the `sql` section below.
 
 ```sql
 -- Create database
@@ -177,57 +75,18 @@ CREATE TABLE transactions (
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (account_id) REFERENCES accounts(account_id)
 );
-
--- Sample data
-INSERT INTO accounts (account_number, customer_name, email, password, balance) VALUES
-('ACC001', 'Otto', 'otto@gmail.com', 'password123', 5000.00),
-('ACC002', 'Rich', 'rich@gmail.com', '123456', 1000.00);
 ```
 
-### Deployment Instructions
-1. Set up MySQL Database
-- Install MySQL Server with docker
-```
-docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 -d mysql:8.0
-```
-
-- Create the database and tables using the provided SQL scripts
-```
-docker exec -it mysql mysql -uroot -p
-```
-
-- Update database credentials in DBConnection.java
-
-2. Build the Application
-```
-mvn clean package
-```
-
-3. Run with Tomcat
-- Option 1: Deploy to External Tomcat
-	- Copy the generated banking-app.war from target/ directory
-	```
-	cp target/banking-app.war /path/to/tomcat/webapps/
-	```
-
-	- Start Tomcat server
-	```
-	# Start Tomcat
-    /path/to/tomcat/bin/startup.sh  # Linux/Mac
-    /path/to/tomcat/bin/startup.bat  # Windows
-    ```
-
-- Option 2: Using Tomcat Maven Plugin
-```
-# Download and run embedded Tomcat
-mvn tomcat7:run
-```
-
-4. Access the Application:
-```
-Open browser and navigate to: http://localhost:8081/banking-app
-Login with sample credentials:
-Email: rich@gmail.com, Password: 123456
-```
-
-
+### Running the Application
+1. **Set up MySQL** (same as before)
+   ```bash
+   docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 -d mysql:8.0
+   docker exec -it mysql mysql -uroot -p
+   ```
+2. **Build and run**
+   ```bash
+   mvn clean package
+   java -jar target/banking-app.jar
+   ```
+3. **Access the app**
+   Open `http://localhost:8081/banking-app` in your browser.

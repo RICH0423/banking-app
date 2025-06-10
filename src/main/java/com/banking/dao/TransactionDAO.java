@@ -1,11 +1,14 @@
 package com.banking.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.banking.model.Transaction;
 import com.banking.util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class TransactionDAO {
     
     public boolean addTransaction(Transaction transaction) {

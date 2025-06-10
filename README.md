@@ -231,3 +231,24 @@ Email: rich@gmail.com, Password: 123456
 ```
 
 
+
+---
+
+### Modernized Architecture
+
+The repository also includes a simple modernization example:
+
+- **springboot-backend** - Spring Boot REST API exposing account and transaction endpoints.
+- **frontend** - A lightweight Vue.js interface that consumes the REST API.
+
+#### Running the Spring Boot backend
+```bash
+mvn -f springboot-backend/pom.xml spring-boot:run
+```
+
+The backend reuses the existing JDBC DAOs so the same MySQL database setup can be used.
+
+#### Running the Vue frontend
+Serve the `frontend` directory from any static web server (for example `python -m http.server`).
+The pages expect the backend to be reachable at `http://localhost:8080` by default.
+

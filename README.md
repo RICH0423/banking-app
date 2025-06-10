@@ -1,114 +1,64 @@
 ##  Banking Application
 
-A Monolithic Banking Application developed using Java MVC(JSP, Servlet, JDBC) and MySQL Database.
+Modern Banking Application built with Spring Boot REST API and Vue.js frontend.
 
 ### Architecture Diagram
-A monolithic application is built as a single, unified unit. All the application's functionalities, such as user interface(View Layer), business logic(Controller/Service Layer), and data access(DAO Layer), are tightly coupled and deployed as one piece.
+The modernized application exposes REST endpoints through Spring Boot while the Vue.js frontend communicates with these APIs.
 
 ```mermaid
 graph TB
     %% Client Layer
-    Browser[Web Browser]
-    
-    %% Monolithic MVC Application
-    subgraph "Monolithic MVC Banking Application"
-        %% View Layer (JSP)
-        subgraph "View Layer - JSP"
-            INDEX[index.jsp]
-            LOGIN[login.jsp]
-            DASH[dashboard.jsp]
-            TRANS[transaction.jsp]
-            ERROR[error.jsp]
-            CSS[style.css]
+    Vue["Vue.js App"]
+
+    %% Spring Boot Application
+    subgraph "Spring Boot Banking API"
+        subgraph "REST Controllers"
+            LC[LoginController]
+            AC[AccountController]
+            TC[TransactionController]
         end
-        
-        %% Controller Layer (Servlets)
-        subgraph "Controller Layer - Servlets"
-            LS[LoginServlet]
-            DS[DashboardServlet]
-            TS[TransactionServlet]
-            LOS[LogoutServlet]
+
+        subgraph "DAO Layer"
+            ADAO[AccountDAO]
+            TDAO[TransactionDAO]
         end
-        
-        %% Model Layer
-        subgraph "Model Layer"
-            subgraph "DAOs"
-                ADAO[AccountDAO]
-                TDAO[TransactionDAO]
-            end
-            
-            subgraph "Models"
-                ACC[Account.java]
-                TRN[Transaction.java]
-            end
-            
-            subgraph "Utilities"
-                DBC[DBConnection.java]
-            end
+
+        subgraph "Models"
+            ACC[Account.java]
+            TRN[Transaction.java]
+        end
+
+        subgraph "Utilities"
+            DBC[DBConnection.java]
         end
     end
-    
+
     %% Database Layer
     subgraph "Database Layer"
         MySQL[(MySQL Database)]
     end
-    
+
     %% Request Flow
-    Browser --> INDEX
-    Browser --> LOGIN
-    Browser --> DASH
-    Browser --> TRANS
-    Browser --> ERROR
-    
-    %% Static Resources
-    LOGIN --> CSS
-    DASH --> CSS
-    TRANS --> CSS
-    
-    %% JSP to Servlets
-    LOGIN --> LS
-    DASH --> DS
-    TRANS --> TS
-    LOGIN --> LOS
-    
-    %% Servlet Response to JSP
-    LS --> DASH
-    LS --> ERROR
-    DS --> DASH
-    TS --> TRANS
-    TS --> ERROR
-    LOS --> LOGIN
-    
-    %% Servlets to DAOs
-    LS --> ADAO
-    DS --> ADAO
-    DS --> TDAO
-    TS --> ADAO
-    TS --> TDAO
-    
-    %% DAOs use Models
+    Vue --> LC
+    Vue --> AC
+    Vue --> TC
+    LC --> ADAO
+    AC --> ADAO
+    TC --> TDAO
     ADAO --> ACC
     TDAO --> TRN
-    
-    %% DAOs use DB Connection
     ADAO --> DBC
     TDAO --> DBC
-    
-    %% DB Connection to MySQL
     DBC --> MySQL
-    
+
     %% Styling
     classDef client fill:#e3f2fd
-    classDef view fill:#f3e5f5
     classDef controller fill:#e8f5e8
-    classDef model fill:#fff3e0
     classDef dao fill:#fce4ec
     classDef database fill:#e0f2f1
-    
-    class Browser client
-    class INDEX,LOGIN,DASH,TRANS,ERROR,CSS view
-    class LS,DS,TS,LOS controller
-    class ACC,TRN,DBC model
+
+    class Vue client
+    class LC,AC,TC controller
     class ADAO,TDAO dao
     class MySQL database
 ```
@@ -203,24 +153,9 @@ docker exec -it mysql mysql -uroot -p
 mvn clean package
 ```
 
-3. Run with Tomcat
-- Option 1: Deploy to External Tomcat
-	- Copy the generated banking-app.war from target/ directory
-	```
-	cp target/banking-app.war /path/to/tomcat/webapps/
-	```
-
-	- Start Tomcat server
-	```
-	# Start Tomcat
-    /path/to/tomcat/bin/startup.sh  # Linux/Mac
-    /path/to/tomcat/bin/startup.bat  # Windows
-    ```
-
-- Option 2: Using Tomcat Maven Plugin
+3. Run the Application
 ```
-# Download and run embedded Tomcat
-mvn tomcat7:run
+mvn spring-boot:run
 ```
 
 4. Access the Application:

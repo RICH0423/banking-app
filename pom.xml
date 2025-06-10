@@ -8,39 +8,23 @@
     <groupId>com.banking</groupId>
     <artifactId>banking-app</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     
     <name>Banking Application</name>
-    <description>Simple Banking Transaction App using Servlet and JSP</description>
+    <description>Banking Application using Spring Boot and Vue.js</description>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>1.8</java.version>
     </properties>
     
     <dependencies>
-        <!-- Servlet API -->
+        <!-- Spring Boot Web -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <!-- JSP API -->
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.3</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <!-- JSTL -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
         <!-- MySQL Connector -->
@@ -48,6 +32,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
+        </dependency>
+
+        <!-- Spring Boot Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <!-- JUnit for Testing (Optional) -->
@@ -78,27 +69,11 @@
                 </configuration>
             </plugin>
             
-            <!-- Maven War Plugin -->
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            
-            <!-- Tomcat Maven Plugin (for easy deployment) -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <url>http://localhost:8080/manager/text</url>
-                    <server>TomcatServer</server>
-                    <port>8081</port>
-                    <path>/banking-app</path>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.5</version>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Banking App</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div v-if="!loggedIn">
+        <h2>Login</h2>
+        <div class="error" v-if="error">{{ error }}</div>
+        <form @submit.prevent="login">
+            <div>
+                <label>Email: <input type="email" v-model="form.email" required></label>
+            </div>
+            <div>
+                <label>Password: <input type="password" v-model="form.password" required></label>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <div v-else>
+        <h2>Welcome {{ account.customerName }}</h2>
+        <p>Balance: {{ account.balance }}</p>
+    </div>
+</div>
+<script>
+new Vue({
+    el: '#app',
+    data: {
+        form: { email: '', password: '' },
+        account: {},
+        loggedIn: false,
+        error: ''
+    },
+    methods: {
+        login() {
+            axios.post('/banking-app/api/login', this.form)
+                .then(res => {
+                    this.account = res.data;
+                    this.loggedIn = true;
+                    this.error = '';
+                })
+                .catch(() => {
+                    this.error = 'Invalid credentials';
+                });
+        }
+    }
+});
+</script>
+</body>
+</html>

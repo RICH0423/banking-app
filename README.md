@@ -112,7 +112,8 @@ docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 -d mysql:8.
 docker exec -it mysql mysql -uroot -p
 ```
 
-- Update database credentials in DBConnection.java
+- Database credentials can be configured with the `DB_URL`, `DB_USER` and
+  `DB_PASSWORD` environment variables.
 
 2. Build the Application
 ```
@@ -129,6 +130,24 @@ java -jar target/banking-app.jar
 Open browser and navigate to: http://localhost:8081/banking-app
 Login with sample credentials:
 Email: rich@gmail.com, Password: 123456
+```
+
+5. Build the Docker image
+```bash
+docker build -t banking-app .
+```
+
+6. Run with Docker
+```bash
+docker run -p 8081:8081 \
+  -e DB_URL=jdbc:mysql://localhost:3306/banking_db \
+  -e DB_USER=root -e DB_PASSWORD=password \
+  banking-app
+```
+
+7. Deploy to Kubernetes
+```bash
+kubectl apply -f k8s/banking-app.yml
 ```
 
 

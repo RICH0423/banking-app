@@ -5,9 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/banking_db";
-    private static final String USER = "root";
-    private static final String PASSWORD = "password";
+    private static final String URL = System.getenv().getOrDefault("DB_URL",
+            "jdbc:mysql://localhost:3306/banking_db");
+    private static final String USER = System.getenv().getOrDefault("DB_USER",
+            "root");
+    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD",
+            "password");
     
     static {
         try {

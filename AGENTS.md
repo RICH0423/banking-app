@@ -6,7 +6,9 @@ This Agents.md file provides comprehensive guidance for OpenAI Codex and other A
 
 - `/src`: Source code that OpenAI Codex should analyze
   - `/main/java`: multiple packages containing Java classes
-  - `/main/webapp`: Java Servlet app config, JSP files, CSS
+  - `/main/webapp/jsp`: Java Servlet Page files
+  - `/main/webapp/WEB-INF/web.xml`: Java Servlet app config
+  - `/main/webapp/css`: CSS files
 - `banking_architecture.mermaid`: Architecture diagram (Mermaid syntax)
 - `pom.xml`: the blueprint of Maven project
 

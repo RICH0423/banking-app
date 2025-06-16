@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Transaction - Banking App</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>New Transaction</h1>
+        <div class="form-container">
+            <p><strong>Current Balance:</strong> ${{ balance.toFixed(2) }}</p>
+            <div v-if="error" class="error">{{ error }}</div>
+            <form @submit.prevent="submitTransaction">
+                <div class="form-group">
+                    <label for="transactionType">Transaction Type:</label>
+                    <select id="transactionType" v-model="transactionType" required>
+                        <option value="">Select Type</option>
+                        <option value="DEPOSIT">Deposit</option>
+                        <option value="WITHDRAWAL">Withdrawal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" v-model.number="amount" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" v-model="description" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Transaction</button>
+                <a href="dashboard.html" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    const { createApp } = Vue;
+    createApp({
+        data() {
+            const acc = JSON.parse(localStorage.getItem('account') || '{}');
+            return {
+                email: acc.email,
+                balance: acc.balance || 0,
+                transactionType: '',
+                amount: 0,
+                description: '',
+                error: ''
+            };
+        },
+        methods: {
+            async submitTransaction() {
+                if (!this.transactionType) return this.error = 'Please select type';
+                const params = new URLSearchParams({
+                    email: this.email,
+                    amount: this.amount
+                });
+                try {
+                    const res = await fetch('/api/accounts/deposit', {
+                        method: 'POST',
+                        body: params,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    });
+                    if (res.ok) {
+                        const acc = await res.json();
+                        localStorage.setItem('account', JSON.stringify(acc));
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        this.error = 'Transaction failed';
+                    }
+                } catch (e) {
+                    this.error = 'Transaction failed';
+                }
+            }
+        }
+    }).mount('#app');
+    </script>
+</body>
+</html>

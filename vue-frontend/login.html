@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banking App - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <h1>Banking Application</h1>
+        <div class="form-container">
+            <h2>Login</h2>
+            <div v-if="error" class="error">{{ error }}</div>
+            <form @submit.prevent="login">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" v-model="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" v-model="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    const { createApp } = Vue;
+    createApp({
+        data() {
+            return { email: '', password: '', error: '' };
+        },
+        methods: {
+            async login() {
+                try {
+                    const params = new URLSearchParams({ email: this.email });
+                    const res = await fetch('/api/accounts/login', {
+                        method: 'POST',
+                        body: params,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    });
+                    if (res.ok) {
+                        const acc = await res.json();
+                        localStorage.setItem('account', JSON.stringify(acc));
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        this.error = 'Invalid credentials';
+                    }
+                } catch (e) {
+                    this.error = 'Login failed';
+                }
+            }
+        }
+    }).mount('#app');
+    </script>
+</body>
+</html>

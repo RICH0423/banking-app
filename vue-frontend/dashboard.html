@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Banking App</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <header>
+            <h1>Banking Dashboard</h1>
+            <div class="user-info">
+                Welcome, {{ account.customerName }} |
+                <a href="#" @click="logout">Logout</a>
+            </div>
+        </header>
+
+        <div class="account-info" v-if="account">
+            <h2>Account Information</h2>
+            <p><strong>Account Number:</strong> {{ account.id }}</p>
+            <p><strong>Current Balance:</strong> ${{ account.balance.toFixed(2) }}</p>
+            <a href="transaction.html" class="btn btn-primary">New Transaction</a>
+        </div>
+
+        <div class="transaction-history">
+            <h2>Recent Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="t in transactions" :key="t.id">
+                        <td>{{ t.date }}</td>
+                        <td>{{ t.type }}</td>
+                        <td :class="t.type === 'DEPOSIT' ? 'credit' : 'debit'">
+                            ${{ t.amount.toFixed(2) }}
+                        </td>
+                        <td>{{ t.description }}</td>
+                    </tr>
+                    <tr v-if="!transactions.length">
+                        <td colspan="4">No transactions found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    const { createApp } = Vue;
+    createApp({
+        data() {
+            return { account: {}, transactions: [] };
+        },
+        created() {
+            const acc = localStorage.getItem('account');
+            this.account = acc ? JSON.parse(acc) : null;
+            // Placeholder transactions
+            this.transactions = [];
+        },
+        methods: {
+            logout() {
+                localStorage.removeItem('account');
+                window.location.href = 'login.html';
+            }
+        }
+    }).mount('#app');
+    </script>
+</body>
+</html>

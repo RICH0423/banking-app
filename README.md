@@ -231,3 +231,6 @@ Email: rich@gmail.com, Password: 123456
 ```
 
 
+
+### Vue Frontend
+After starting the Spring Boot API, you can open the modern Vue interface located in the `vue-frontend` folder. Launch `login.html` directly in your browser to interact with the REST API using the same styles as the original JSP pages.

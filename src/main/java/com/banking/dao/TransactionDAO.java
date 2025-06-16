@@ -5,13 +5,19 @@ import com.banking.util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class TransactionDAO {
+
+    @Autowired
+    private DBConnection dbConnection;
     
     public boolean addTransaction(Transaction transaction) {
         String sql = "INSERT INTO transactions (account_id, transaction_type, amount, description) VALUES (?, ?, ?, ?)";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = dbConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, transaction.getAccountId());
@@ -30,7 +36,7 @@ public class TransactionDAO {
         List<Transaction> transactions = new ArrayList<>();
         String sql = "SELECT * FROM transactions WHERE account_id = ? ORDER BY transaction_date DESC";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = dbConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, accountId);

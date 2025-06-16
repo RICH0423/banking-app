@@ -1,23 +1,18 @@
 package com.banking.util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/banking_db";
-    private static final String USER = "root";
-    private static final String PASSWORD = "password";
-    
-    static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+
+    @Autowired
+    private DataSource dataSource;
+
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }

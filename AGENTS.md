@@ -19,6 +19,12 @@ This Agents.md file provides comprehensive guidance for OpenAI Codex and other A
 - Agents.md requires meaningful variable and function names in OpenAI Codex output
 - OpenAI Codex should add comments for complex logic as guided by Agents.md
 
+## Application Design Principles
+- Design for Microservices
+- Use containerization
+- Be API-First
+- Design for Statelessness
+  
 ## Testing Requirements for OpenAI Codex
 
 OpenAI Codex should run tests with the following commands:

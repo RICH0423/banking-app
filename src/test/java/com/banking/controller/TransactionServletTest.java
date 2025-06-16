@@ -9,11 +9,11 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import java.lang.reflect.Field;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -26,7 +26,7 @@ public class TransactionServletTest {
     private AccountDAO accountDAO;
     private TransactionDAO transactionDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         servlet = new TransactionServlet();
         request = mock(HttpServletRequest.class);

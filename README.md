@@ -1,6 +1,6 @@
 ##  Banking Application
 
-A Monolithic Banking Application developed using Java MVC(JSP, Servlet, JDBC) and MySQL Database.
+A Banking Application originally built with Java Servlets and JSP. The project has been modernized with Spring Boot for the backend and Vue 3 for the frontend. Docker images are provided for easy deployment.
 
 ### Architecture Diagram
 A monolithic application is built as a single, unified unit. All the application's functionalities, such as user interface(View Layer), business logic(Controller/Service Layer), and data access(DAO Layer), are tightly coupled and deployed as one piece.
@@ -203,31 +203,11 @@ docker exec -it mysql mysql -uroot -p
 mvn clean package
 ```
 
-3. Run with Tomcat
-- Option 1: Deploy to External Tomcat
-	- Copy the generated banking-app.war from target/ directory
-	```
-	cp target/banking-app.war /path/to/tomcat/webapps/
-	```
-
-	- Start Tomcat server
-	```
-	# Start Tomcat
-    /path/to/tomcat/bin/startup.sh  # Linux/Mac
-    /path/to/tomcat/bin/startup.bat  # Windows
-    ```
-
-- Option 2: Using Tomcat Maven Plugin
+3. Run with Docker Compose
 ```
-# Download and run embedded Tomcat
-mvn tomcat7:run
+docker compose up --build
 ```
 
-4. Access the Application:
-```
-Open browser and navigate to: http://localhost:8081/banking-app
-Login with sample credentials:
-Email: rich@gmail.com, Password: 123456
-```
+The backend will be available at `http://localhost:8080` and the Vue frontend at `http://localhost`.
 
 

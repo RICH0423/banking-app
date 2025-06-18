@@ -8,8 +8,17 @@ import java.sql.SQLException;
 import com.banking.model.Account;
 import com.banking.util.DBConnection;
 
+/**
+ * Data Access Object for {@link Account} entities.
+ * Provides JDBC based operations for authentication and balance management.
+ */
 public class AccountDAO {
     
+    /**
+     * Authenticate an account with the provided credentials.
+     *
+     * @return the {@link Account} if credentials match, otherwise {@code null}
+     */
     public Account login(String email, String password) {
         Account account = null;
         String sql = "SELECT * FROM accounts WHERE email = ? AND password = ?";
@@ -30,6 +39,9 @@ public class AccountDAO {
         return account;
     }
     
+    /**
+     * Fetch an account by its ID.
+     */
     public Account getAccountById(int accountId) {
         Account account = null;
         String sql = "SELECT * FROM accounts WHERE account_id = ?";
@@ -49,6 +61,11 @@ public class AccountDAO {
         return account;
     }
     
+    /**
+     * Update the balance for an account.
+     *
+     * @return {@code true} if the update succeeded
+     */
     public boolean updateBalance(int accountId, double newBalance) {
         String sql = "UPDATE accounts SET balance = ? WHERE account_id = ?";
         
@@ -65,6 +82,9 @@ public class AccountDAO {
         return false;
     }
     
+    /**
+     * Map a JDBC {@link ResultSet} row to an {@link Account} object.
+     */
     private Account extractAccountFromResultSet(ResultSet rs) throws SQLException {
         Account account = new Account();
         account.setAccountId(rs.getInt("account_id"));

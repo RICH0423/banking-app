@@ -11,17 +11,34 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
+/**
+ * REST controller exposing account operations to the frontend.
+ * <p>
+ * Each handler method corresponds to a specific API endpoint that
+ * performs authentication or manipulates banking transactions.
+ */
 @RestController
 @RequestMapping("/api")
 public class AccountController {
     private final AccountDAO accountDAO;
     private final TransactionDAO transactionDAO;
 
+    /**
+     * Injects DAO dependencies used by the controller.
+     */
     public AccountController(AccountDAO accountDAO, TransactionDAO transactionDAO) {
         this.accountDAO = accountDAO;
         this.transactionDAO = transactionDAO;
     }
 
+    /**
+     * Authenticate the user with the provided credentials.
+     *
+     * @param email user email
+     * @param password user password
+     * @param session HTTP session used to store the authenticated account
+     * @return HTTP 200 with account info or 401 if credentials are invalid
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String email,
                                    @RequestParam String password,
@@ -35,11 +52,20 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
+    /**
+     * Log the current user out by invalidating the session.
+     */
     @PostMapping("/logout")
     public void logout(HttpSession session) {
         session.invalidate();
     }
 
+    /**
+     * Retrieve the currently logged in account information.
+     *
+     * @param session active HTTP session
+     * @return account details or 401 if no account is logged in
+     */
     @GetMapping("/account")
     public ResponseEntity<Account> account(HttpSession session) {
         Account acc = (Account) session.getAttribute("account");
@@ -52,6 +78,9 @@ public class AccountController {
         return ResponseEntity.ok(fresh);
     }
 
+    /**
+     * Get the list of transactions for the logged in account.
+     */
     @GetMapping("/transactions")
     public ResponseEntity<List<Transaction>> transactions(HttpSession session) {
         Account acc = (Account) session.getAttribute("account");
@@ -62,6 +91,10 @@ public class AccountController {
         return ResponseEntity.ok(list);
     }
 
+    /**
+     * Create a new transaction for the authenticated account.
+     * Handles deposit and withdrawal logic and updates the account balance.
+     */
     @PostMapping("/transactions")
     public ResponseEntity<?> newTransaction(@RequestParam String transactionType,
                                             @RequestParam double amount,

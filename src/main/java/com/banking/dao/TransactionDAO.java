@@ -6,8 +6,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO for {@link Transaction} entities dealing with transaction records.
+ */
 public class TransactionDAO {
     
+    /**
+     * Persist a new transaction in the database.
+     *
+     * @return {@code true} when the insert succeeds
+     */
     public boolean addTransaction(Transaction transaction) {
         String sql = "INSERT INTO transactions (account_id, transaction_type, amount, description) VALUES (?, ?, ?, ?)";
         
@@ -26,6 +34,9 @@ public class TransactionDAO {
         return false;
     }
     
+    /**
+     * Retrieve all transactions for a specific account ordered by date.
+     */
     public List<Transaction> getTransactionsByAccountId(int accountId) {
         List<Transaction> transactions = new ArrayList<>();
         String sql = "SELECT * FROM transactions WHERE account_id = ? ORDER BY transaction_date DESC";
@@ -45,6 +56,9 @@ public class TransactionDAO {
         return transactions;
     }
     
+    /**
+     * Convert a {@link ResultSet} row into a {@link Transaction} object.
+     */
     private Transaction extractTransactionFromResultSet(ResultSet rs) throws SQLException {
         Transaction transaction = new Transaction();
         transaction.setTransactionId(rs.getInt("transaction_id"));
